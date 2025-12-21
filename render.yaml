@@ -1,7 +1,7 @@
 services:
   - type: web
     name: smart-expiry-tracker
-    runtime: python3
+    runtime: python
     buildCommand: "pip install -r requirements.txt && python manage.py collectstatic --noinput --clear"
     startCommand: "gunicorn expirytracker.wsgi:application --bind 0.0.0.0:$PORT"
     envVars:
@@ -13,14 +13,12 @@ services:
         generateValue: true
       - key: WEB_CONCURRENCY
         value: 4
-
   - type: redis
     name: redis
     ipAllowList: []  # only accessible by other services
-
   - type: worker
     name: celery-worker
-    runtime: python3
+    runtime: python
     buildCommand: "pip install -r requirements.txt"
     startCommand: "celery -A expirytracker worker --loglevel=info"
     envVars:
